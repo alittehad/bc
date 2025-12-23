@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Boli Lagao</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div class="card">
+  <h2>Boli Lagao (POINT)</h2>
+
+  <input type="number" id="boliPoint" placeholder="POINT daale"
+         style="width:100%;padding:12px;border-radius:10px;border:1px solid #ccc">
+
+  <button class="btn3d" id="submitBoli">Boli Submit</button>
+
+  <p id="msg"></p>
+</div>
+
+<script type="module">
+import { auth, db } from "../assets/js/firebase-init.js";
+import { onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { collection, addDoc, serverTimestamp } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+let currentUser;
+
+onAuthStateChanged(auth,(user)=>{
+  if(!user){
+    location.href="../login.html";
+  }
+  currentUser = user;
+});
+
+document.getElementById("submitBoli").onclick = async ()=>{
+  const point = Number(document.getElementById("boliPoint").value);
+  if(point <= 0){
+    alert("Valid POINT daale");
+    return;
+  }
+
+  await addDoc(collection(db,"boli"),{
+    uid: currentUser.uid,
+    email: currentUser.email,
+    boli_point: point,
+    time: serverTimestamp(),
+    month: new Date().getMonth()+1
+  });
+
+  document.getElementById("msg").innerText = "Boli Submit Ho Gayi";
+};
+</script>
+
+</body>
+</html>
