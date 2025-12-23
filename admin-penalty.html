@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Penalty System</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div class="card">
+  <h2>Penalty Auto System</h2>
+  <div id="penaltyList">Loading...</div>
+</div>
+
+<script type="module">
+import { auth, db } from "../assets/js/firebase-init.js";
+import { onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { collection, getDocs, doc, updateDoc } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const DAILY_PENALTY = 100;
+
+onAuthStateChanged(auth, async(user)=>{
+  if(!user){
+    location.href="../login.html";
+    return;
+  }
+
+  const usersSnap = await getDocs(collection(db,"users"));
+  let html = "";
+
+  usersSnap.forEach(async(u)=>{
+    const data = u.data();
+    if(data.role === "user"){
+      const penalty = DAILY_PENALTY; // demo auto
+      await updateDoc(doc(db,"users",u.id),{
+        penalty_point: penalty
+      });
+      html += `<p>${data.email} → Penalty: ${penalty} Point</p>`;
+    }
+  });
+
+  document.getElementById("penaltyList").innerHTML = html;
+});
+</script>
+
+</body>
+</html>
