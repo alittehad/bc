@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Boli List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot }
+      from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCaGUKo6vHbEVtQEx7a5UT_dBP0H37nink",
+      authDomain: "bc-10-8a335.firebaseapp.com",
+      projectId: "bc-10-8a335",
+      storageBucket: "bc-10-8a335.appspot.com",
+      messagingSenderId: "1073215564606",
+      appId: "1:1073215564606:web:035f97bdbdd630f0f49a6f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const boliList = document.getElementById("boliList");
+
+    const q = query(
+      collection(db, "boli"),
+      orderBy("boli_point", "desc")
+    );
+
+    onSnapshot(q, (snapshot) => {
+      boliList.innerHTML = "";
+      let rank = 1;
+
+      snapshot.forEach((doc) => {
+        const d = doc.data();
+
+        const div = document.createElement("div");
+        div.className = "boli-card";
+
+        if (rank === 1) {
+          div.classList.add("winner");
+        }
+
+        div.innerHTML = `
+          <div class="row">
+            <span><b>#${rank}</b></span>
+            <span>${d.email}</span>
+            <span><b>${d.boli_point} POINT</b></span>
+          </div>
+        `;
+
+        boliList.appendChild(div);
+        rank++;
+      });
+
+      if (snapshot.empty) {
+        boliList.innerHTML = "<p>No Boli Yet</p>";
+      }
+    });
+  </script>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f9;
+      padding: 10px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    .boli-card {
+      background: white;
+      margin-bottom: 10px;
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .boli-card.winner {
+      background: #e6ffe6;
+      border: 2px solid #00b300;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2 style="text-align:center;">🔥 Live Boli List (POINT)</h2>
+  <p style="text-align:center;font-size:13px;">
+    Highest POINT wali Boli top par hogi
+  </p>
+
+  <div id="boliList"></div>
+</div>
+
+</body>
+</html>
