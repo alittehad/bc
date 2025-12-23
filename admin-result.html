@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Boli Result</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div class="card">
+  <h2>Boli Result (Highest POINT)</h2>
+  <div id="result">Loading...</div>
+</div>
+
+<script type="module">
+import { auth, db } from "../assets/js/firebase-init.js";
+import { onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { collection, query, where, orderBy, limit, getDocs } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+onAuthStateChanged(auth, async(user)=>{
+  if(!user){
+    location.href="../login.html";
+    return;
+  }
+
+  const q = query(
+    collection(db,"boli"),
+    orderBy("boli_point","desc"),
+    limit(1)
+  );
+
+  const snap = await getDocs(q);
+
+  if(snap.empty){
+    document.getElementById("result").innerText = "Abhi koi boli nahi";
+    return;
+  }
+
+  snap.forEach(doc=>{
+    const d = doc.data();
+    document.getElementById("result").innerHTML =
+      `<b>Winner:</b> ${d.email}<br>
+       <b>Winning Point:</b> ${d.boli_point}`;
+  });
+});
+</script>
+
+</body>
+</html>
