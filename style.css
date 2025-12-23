@@ -1,0 +1,29 @@
+body{
+  margin:0;
+  font-family:Arial;
+  background:#eef2f7;
+}
+.card{
+  max-width:420px;
+  margin:40px auto;
+  background:#fff;
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+.btn3d{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  color:#fff;
+  background:linear-gradient(#4facfe,#0066ff);
+  box-shadow:0 6px 0 #0033aa;
+}
+.btn3d:active{
+  transform:translateY(4px);
+  box-shadow:0 2px 0 #0033aa;
+}
+h2{text-align:center;}
