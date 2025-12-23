@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BC Login</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="card">
+  <h2>BC Login</h2>
+  <button class="btn3d" id="loginBtn">Continue with Google</button>
+</div>
+
+<script type="module">
+import { auth, db } from "./assets/js/firebase-init.js";
+import { GoogleAuthProvider, signInWithPopup } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { doc, getDoc, setDoc } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const provider = new GoogleAuthProvider();
+
+document.getElementById("loginBtn").onclick = async () => {
+  const res = await signInWithPopup(auth, provider);
+  const user = res.user;
+
+  const ref = doc(db,"users",user.uid);
+  const snap = await getDoc(ref);
+
+  let role = "user";
+  if(user.email === "ngogrant454@gmail.com"){
+    role = "admin";
+  }
+
+  if(!snap.exists()){
+    await setDoc(ref,{
+      name:user.displayName,
+      email:user.email,
+      role:role
+    });
+  }
+
+  if(role === "admin"){
+    location.href="admin/admin-dashboard.html";
+  }else{
+    location.href="user/user-dashboard.html";
+  }
+};
+</script>
+
+</body>
+</html>
